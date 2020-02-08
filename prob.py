@@ -1,11 +1,9 @@
-import cv2
-import numpy as np
+from scipy.optimize import linear_sum_assignment
+from scipy.spatial.distance import cdist
 from sklearn.cluster import KMeans
+import numpy as np
+import cv2
 import sys
-
-
-imgPath = sys.argv[1]
-image = cv2.imread(imgPath)
 
 
 target_bgr = [39, 39, 255]
@@ -13,7 +11,7 @@ minBGR = np.array(target_bgr)
 maxBGR = np.array(target_bgr)
 
 
-def find_barycenter(image):
+def find_centers(image):
 	# Creates a mask that sets luminosity to 255 if target color, shape=(2017, 3400)
 	mask = cv2.inRange(image, minBGR, maxBGR)
 	# mask.item((y, x)) returns 255 or 0
@@ -25,9 +23,26 @@ def find_barycenter(image):
 				points.append((i, j))
 	points = np.array(points)
 	
-	kmeans = KMeans(n_clusters=1).fit(points)
-	barycenter = kmeans.cluster_centers_
-	return((barycenter[0][1], barycenter[0][0]))
+	kmeans = KMeans(n_clusters=4).fit(points)
+	centers = kmeans.cluster_centers_
+	# returns (y, x) tuples
+	return centers
 
 
-print(find_barycenter(image))
+image1 = cv2.imread(sys.argv[1])
+
+if len(sys.argv) == 2:
+	print(find_centers(image1))
+
+else:
+	image2 = cv2.imread(sys.argv[2])
+	points1 = find_centers(image1)
+	points2 = find_centers(image2)
+	# points2 = np.array([(300, 400), (1800, 100), (700, 2700), (1550, 3000)])
+	# returns a matrix[i][j] of euclidean distances between points1[i] and points2[j]
+	costs_matrix = cdist(points1, points2)
+	
+	_, assignment = linear_sum_assignment(costs_matrix)
+
+	for i in range(4):
+		print("We assign", points1[i], "to", points2[assignment[i]])
