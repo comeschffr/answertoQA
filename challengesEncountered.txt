@@ -1,0 +1,24 @@
+Hurdles:
+
+-couldn't make the last version of openCV work on my computer (had to install the previous version 4.1.2.30), struggled for 2 hours ;)
+
+-how to use openCV, first time I use it!!! Use of inRange for a mask
+
+
+Solutions:
+
+-KMeans seems a great option for this problem (simple and efficient implementation). Therefore we use 4 clusters each made of close pixels. Then we return the result of cluster_centers_ to get center of each
+
+
+Bonus question:
+
+
+Because of the vagueness of the statement, I first took a wrong way by thinking about image transformations (translation, rotation, homothety and warping) in order to align the points. But there was no challenge here except a brute force way...
+
+Then I realised I was not even answering the problem, so I decided to go for a point matching, the closest pair of points (definitely more relevant to the statement than the previous option)
+First, we have different possibilities on how to align images: either we align them by their top-left corner at coordinate (0, 0) (the method I will use) or by their width/height centers, or even by their barycenters (arithmetic mean of the four points). We are gonna use the first option for sake of simplicity but the two others are not hard to implement (just add the absolute value of the difference between the largest centre and the smallest one to the coordinates of the smallest one)
+
+Then to find the best matches, there are two techniques:
+-clustering algorithms with size constraint, time complexity is: O(n) to find approximate means of 4 clusters + 0(n^2) to compute distances to clusters + O(n.log n) to manage the priority queue according to distance to their closest cluster and their inclination to leave for another cluster. Albeit, priorities need to be computed after any point is popped out. So complicated to implement and not worth for only 8 points.
+-linear_sum_assignment from scipy.optimize. Uses the Hungarian algorithm Fibonacci heaps to reduce O(n^3) to O(n^2.log n)
+I chose to implement the 2nd option that is fast enough with 8 points.

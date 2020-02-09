@@ -32,7 +32,9 @@ image1 = cv2.imread(sys.argv[1])
 points1 = find_centers(image1)
 
 if len(sys.argv) == 2:
-	print(points1)
+	revert = lambda x: np.flip(x)
+	# displays (x, y) tuples
+	print(revert(points1))
 
 else:
 	image2 = cv2.imread(sys.argv[2])
