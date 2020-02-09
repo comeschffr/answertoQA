@@ -14,7 +14,6 @@ maxBGR = np.array(target_bgr)
 def find_centers(image):
 	# Creates a mask that sets luminosity to 255 if target color, shape=(2017, 3400)
 	mask = cv2.inRange(image, minBGR, maxBGR)
-	# mask.item((y, x)) returns 255 or 0
 
 	points = []
 	for i in range(2017):
@@ -30,18 +29,18 @@ def find_centers(image):
 
 
 image1 = cv2.imread(sys.argv[1])
+points1 = find_centers(image1)
 
 if len(sys.argv) == 2:
-	print(find_centers(image1))
+	print(points1)
 
 else:
 	image2 = cv2.imread(sys.argv[2])
-	points1 = find_centers(image1)
 	points2 = find_centers(image2)
-	# points2 = np.array([(300, 400), (1800, 100), (700, 2700), (1550, 3000)])
+
 	# returns a matrix[i][j] of euclidean distances between points1[i] and points2[j]
 	costs_matrix = cdist(points1, points2)
-	
+
 	_, assignment = linear_sum_assignment(costs_matrix)
 
 	for i in range(4):
