@@ -6,6 +6,10 @@ import cv2
 import sys
 
 
+# if given one image in input, returns the centers of the 4 red dots
+# otherwise, if given two images pathes, returns points couples
+
+
 target_bgr = [39, 39, 255]
 minBGR = np.array(target_bgr)
 maxBGR = np.array(target_bgr)
