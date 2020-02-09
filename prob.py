@@ -16,8 +16,8 @@ def find_centers(image):
 	mask = cv2.inRange(image, minBGR, maxBGR)
 
 	points = []
-	for i in range(2017):
-		for j in range(3400):
+	for i in range(image.shape[0]):
+		for j in range(image.shape[1]):
 			if mask.item((i, j)) == 255:
 				points.append((i, j))
 	points = np.array(points)
@@ -30,10 +30,9 @@ def find_centers(image):
 
 image1 = cv2.imread(sys.argv[1])
 points1 = find_centers(image1)
-
+print(image1.shape)
 if len(sys.argv) == 2:
 	revert = lambda x: np.flip(x)
-	# displays (x, y) tuples
 	print(revert(points1))
 
 else:
